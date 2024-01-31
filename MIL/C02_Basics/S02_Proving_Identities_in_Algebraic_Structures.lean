@@ -36,9 +36,11 @@ end
 namespace MyRing
 variable {R : Type*} [Ring R]
 
-theorem add_zero (a : R) : a + 0 = a := by rw [add_comm, zero_add]
+theorem add_zero (a : R) : a + 0 = a := by
+  rw [add_comm, zero_add]
 
-theorem add_right_neg (a : R) : a + -a = 0 := by rw [add_comm, add_left_neg]
+theorem add_right_neg (a : R) : a + -a = 0 := by
+  rw [add_comm, add_left_neg]
 
 #check MyRing.add_zero
 #check add_zero
@@ -75,10 +77,15 @@ theorem zero_mul (a : R) : 0 * a = 0 := by
   rw [add_left_cancel h]
 
 theorem neg_eq_of_add_eq_zero {a b : R} (h : a + b = 0) : -a = b := by
-  sorry
+  rw [← neg_add_cancel_left a b]
+  rw [h]
+  rw [add_zero]
+
 
 theorem eq_neg_of_add_eq_zero {a b : R} (h : a + b = 0) : a = -b := by
-  sorry
+  rw [← add_neg_cancel_right a b]
+  rw [h]
+  rw [add_comm, add_zero]
 
 theorem neg_zero : (-0 : R) = 0 := by
   apply neg_eq_of_add_eq_zero
@@ -108,13 +115,13 @@ namespace MyRing
 variable {R : Type*} [Ring R]
 
 theorem self_sub (a : R) : a - a = 0 := by
-  sorry
+  rw [sub_eq_add_neg, add_right_neg]
 
 theorem one_add_one_eq_two : 1 + 1 = (2 : R) := by
   norm_num
 
 theorem two_mul (a : R) : 2 * a = a + a := by
-  sorry
+  rw [← one_add_one_eq_two, add_mul, one_mul]
 
 end MyRing
 
@@ -137,13 +144,18 @@ variable {G : Type*} [Group G]
 namespace MyGroup
 
 theorem mul_right_inv (a : G) : a * a⁻¹ = 1 := by
-  sorry
+-- CRAZY, never wouldve guessed this
+  have h : (a * a⁻¹)⁻¹ * (a * a⁻¹ * (a * a⁻¹)) = 1 := by
+    rw [mul_assoc, ← mul_assoc a⁻¹ a, mul_left_inv, one_mul, mul_left_inv]
+  rw [← h, ← mul_assoc, mul_left_inv, one_mul]
 
 theorem mul_one (a : G) : a * 1 = a := by
-  sorry
+  rw [← mul_left_inv a, <-mul_assoc, mul_right_inv, one_mul]
 
 theorem mul_inv_rev (a b : G) : (a * b)⁻¹ = b⁻¹ * a⁻¹ := by
-  sorry
+-- CRAZY, never wouldve guessed this
+  rw [← one_mul (b⁻¹ * a⁻¹), ← mul_left_inv (a * b), mul_assoc, mul_assoc, ← mul_assoc b b⁻¹,
+    mul_right_inv, one_mul, mul_right_inv, mul_one]
 
 end MyGroup
 

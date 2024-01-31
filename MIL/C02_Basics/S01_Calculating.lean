@@ -118,8 +118,7 @@ example (a b : ℝ) : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by
   rw [mul_sub]
   rw [mul_comm b a]
   rw [add_sub]
-  rw [<-pow_two a]
-  rw [<-pow_two b]
+  rw [add_comm (- a * b) (a * b)]
   -- STUCK
 
 #check pow_two a
