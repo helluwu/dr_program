@@ -46,10 +46,18 @@ example : x ⊔ y ⊔ z = x ⊔ (y ⊔ z) := by
   apply sup_assoc
 
 theorem absorb1 : x ⊓ (x ⊔ y) = x := by
-  apply inf_sup_self
+  apply le_antisymm
+  apply inf_le_left
+  apply le_inf
+  apply le_refl
+  apply le_sup_left
 
 theorem absorb2 : x ⊔ x ⊓ y = x := by
-  apply sup_inf_self
+  apply le_antisymm
+  apply sup_le
+  apply le_refl
+  apply inf_le_left
+  apply le_sup_left
 
 end
 
@@ -90,10 +98,21 @@ example (h : a ≤ b) : 0 ≤ b - a := by
   apply sub_nonneg_of_le h
 
 example (h: 0 ≤ b - a) : a ≤ b := by
-  apply le_of_sub_nonneg h
+  have h1:= add_le_add_left h a
+  rw [add_zero] at h1
+  rw [add_comm] at h1
+  rw [sub_add_cancel] at h1
+  exact h1
 
 example (h : a ≤ b) (h' : 0 ≤ c) : a * c ≤ b * c := by
-  sorry
+  have h1 := sub_nonneg_of_le h
+  have h2 := mul_nonneg h1 h'
+  rw [mul_sub_right_distrib] at h2
+  have h3 := add_le_add_left h2 (a * c)
+  rw [add_zero] at h3
+  rw [add_comm]at h3
+  rw [sub_add_cancel] at h3
+  exact h3
 
 end
 
@@ -106,6 +125,11 @@ variable (x y z : X)
 #check (dist_triangle x y z : dist x z ≤ dist x y + dist y z)
 
 example (x y : X) : 0 ≤ dist x y := by
-  apply dist_nonneg
+  have h1 := dist_triangle x y x
+  rw [dist_self] at h1
+  rw [dist_comm] at h1
+  rw [nonneg_add_self_iff] at h1
+  rw [dist_comm] at h1
+  exact h1
 
 end

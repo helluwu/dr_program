@@ -82,11 +82,7 @@ example : min a b + c = min (a + c) (b + c) := by
 #check (abs_add : ∀ a b : ℝ, |a + b| ≤ |a| + |b|)
 
 example : |a| - |b| ≤ |a - b| := by
-  have h := |a -b + b| ≤ |a - b| + |b|
-  apply abs_add (a - b) b at h
-  rw [sub_add_cancel] at h
-  have h1 := add_le_add_right h (-|b|)
-  rw [add_neg_cancel_right] at h1
+  sorry
 
 end
 
@@ -123,5 +119,6 @@ variable (m n : ℕ)
 #check (Nat.lcm_zero_left n : Nat.lcm 0 n = 0)
 
 example : Nat.gcd m n = Nat.gcd n m := by
-  sorry
+  apply Nat.gcd_comm
+
 end
